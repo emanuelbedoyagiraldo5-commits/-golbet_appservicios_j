@@ -1,0 +1,72 @@
+@model IEnumerable<GolBet.Services.DTOs.MatchDto>
+@{
+    ViewData["Title"] = "Cartelera de partidos";
+}
+
+<h1 class="mb-4">⚽ Cartelera de partidos</h1>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">No hay partidos registrados todavía.</p>
+}
+
+<div class="row g-3">
+    @foreach (var match in Model)
+    {
+        var badgeClass = match.Status switch
+        {
+            "Scheduled" => "bg-success",
+            "InProgress" => "bg-warning text-dark",
+            _ => "bg-dark"
+        };
+
+        <div class="col-12 col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-secondary">@match.Date.ToString("dd/MM/yyyy HH:mm")</span>
+                        <span class="badge @badgeClass">@match.Status</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center text-center">
+                        <div class="flex-fill">
+                            <img src="@match.HomeTeamCrestUrl" alt="@match.HomeTeamName" width="48" height="48" />
+                            <div class="fw-bold">@match.HomeTeamName</div>
+                        </div>
+                        <div class="px-2">
+                            @if (match.HomeGoals.HasValue && match.AwayGoals.HasValue)
+                            {
+                                <span class="fs-4 fw-bold">@match.HomeGoals - @match.AwayGoals</span>
+                            }
+                            else
+                            {
+                                <span class="fs-5 text-muted">vs</span>
+                            }
+                        </div>
+                        <div class="flex-fill">
+                            <img src="@match.AwayTeamCrestUrl" alt="@match.AwayTeamName" width="48" height="48" />
+                            <div class="fw-bold">@match.AwayTeamName</div>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <div class="d-flex justify-content-around text-center">
+                        <div>
+                            <div class="text-muted small">Local</div>
+                            <div class="fw-bold">@match.HomeOdds.ToString("0.00")</div>
+                        </div>
+                        <div>
+                            <div class="text-muted small">Empate</div>
+                            <div class="fw-bold">@match.DrawOdds.ToString("0.00")</div>
+                        </div>
+                        <div>
+                            <div class="text-muted small">Visitante</div>
+                            <div class="fw-bold">@match.AwayOdds.ToString("0.00")</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
