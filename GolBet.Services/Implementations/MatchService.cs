@@ -28,4 +28,12 @@ public class MatchService : IMatchService
         var match = await _matchRepository.GetByIdWithDetailsAsync(id);
         return match is null ? null : _mapper.Map<MatchDto>(match);
     }
+
+    // Module 5: null means "that match doesn't exist" -- a valid answer,
+    // not an error. The controller turns this into HTTP 404.
+    public async Task<MatchDetailDto?> GetDetailAsync(int id)
+    {
+        var match = await _matchRepository.GetByIdWithDetailsAsync(id);
+        return match is null ? null : _mapper.Map<MatchDetailDto>(match);
+    }
 }

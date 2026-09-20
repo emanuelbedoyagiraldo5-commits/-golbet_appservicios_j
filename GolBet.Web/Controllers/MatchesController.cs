@@ -1,3 +1,4 @@
+using GolBet.Entities.Enums;
 using GolBet.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,10 +13,21 @@ public class MatchesController : Controller
         _matchService = matchService;
     }
 
-    // Cartelera: todos los partidos, sin filtro de estado
-    public async Task<IActionResult> Index()
+    // GET /Matches                    -> all matches
+    // GET /Matches?status=Scheduled   -> filtered board
+    public async Task<IActionResult> Index(MatchStatus? status)
     {
-        var matches = await _matchService.GetAllAsync();
-        return View(matches);
+        ViewBag.CurrentStatus = status;
+        var board = await _matchService.GetAllAsync(status);
+        return View(board);
+    }
+
+    // GET /Matches/Detail/3
+    public async Task<IActionResult> Detail(int id)
+    {
+        var match = await _matchService.GetDetailAsync(id);
+        if (match is null) return NotFound();   // HTTP 404, not a broken view
+
+        return View(match);
     }
 }
