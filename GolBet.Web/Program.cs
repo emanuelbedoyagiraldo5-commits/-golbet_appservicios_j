@@ -4,12 +4,21 @@ using GolBet.Repositories.Interfaces;
 using GolBet.Services.Implementations;
 using GolBet.Services.Interfaces;
 using GolBet.Services.Mapping;
+using GolBet.Web.ModelBinding;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
+
+// Module 6: the whole app formats dates and numbers in Colombian Spanish
+var culture = new CultureInfo("es-CO");
+CultureInfo.DefaultThreadCurrentCulture = culture;
+CultureInfo.DefaultThreadCurrentUICulture = culture;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+    // es-CO: odds typed as "2,50" or "2.50" both bind to 2.50
+    options.ModelBinderProviders.Insert(0, new DecimalModelBinderProvider()));
 
 // EF Core: SQL Server + Code First
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -25,6 +34,7 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 // Services (lógica de negocio)
 builder.Services.AddScoped<IMatchService, MatchService>();
+builder.Services.AddScoped<ITeamService, TeamService>();
 
 var app = builder.Build();
 

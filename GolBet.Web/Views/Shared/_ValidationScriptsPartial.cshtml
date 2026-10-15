@@ -1,2 +1,16 @@
 ﻿<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
 <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+<script>
+    // es-CO: accept both "2,50" and "2.50" as decimals (the server binder does the same)
+    (function ($) {
+        var toNumber = function (value) { return parseFloat(String(value).replace(',', '.')); };
+
+        $.validator.methods.number = function (value, element) {
+            return this.optional(element) || /^-?\d+([.,]\d+)?$/.test(value);
+        };
+        $.validator.methods.range = function (value, element, param) {
+            var n = toNumber(value);
+            return this.optional(element) || (n >= param[0] && n <= param[1]);
+        };
+    })(jQuery);
+</script>

@@ -23,5 +23,10 @@ public class MappingProfile : Profile
         CreateMap<Match, MatchDetailDto>()
             .IncludeBase<Match, MatchDto>()
             .ForMember(dest => dest.TotalBets, opt => opt.MapFrom(src => src.Bets.Count));
+
+        // Module 6: read DTO for teams + write DTOs (both directions via ReverseMap)
+        CreateMap<Team, TeamDto>();
+        CreateMap<TeamFormDto, Team>().ReverseMap();
+        CreateMap<MatchFormDto, Match>().ReverseMap();
     }
 }

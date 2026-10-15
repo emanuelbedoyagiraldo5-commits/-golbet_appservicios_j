@@ -10,4 +10,10 @@ public interface IMatchService
 
     // Module 5: full detail read model for one match (includes bet count).
     Task<MatchDetailDto?> GetDetailAsync(int id);
+
+    // Module 6: write operations
+    Task<MatchFormDto?> GetForEditAsync(int id);
+    Task CreateAsync(MatchFormDto dto);
+    Task UpdateAsync(MatchFormDto dto);
+    Task DeactivateAsync(int id);
 }
