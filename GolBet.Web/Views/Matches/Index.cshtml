@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Cartelera de partidos";
     var current = (MatchStatus?)ViewBag.CurrentStatus;
+    var search = (string?)ViewBag.CurrentSearch;
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -13,20 +14,33 @@
     }
 </div>
 
+@* Team search: GET form, so the URL keeps the search (/Matches?search=nacional) *@
+<form asp-action="Index" method="get" class="d-flex gap-2 mb-3">
+    @if (current is not null)
+    {
+        @* keeps the active status filter when searching *@
+        <input type="hidden" name="status" value="@current" />
+    }
+    <input type="search" name="search" value="@search" class="form-control"
+           placeholder="Buscar por equipo (ej: nacional)" aria-label="Buscar por equipo" />
+    <button type="submit" class="btn btn-success">Buscar</button>
+</form>
+
+@* Status filters keep the active search (asp-route-search) *@
 <div class="d-flex gap-2 flex-wrap mb-4">
-    <a asp-action="Index"
+    <a asp-action="Index" asp-route-search="@search"
        class="btn btn-sm @(current is null ? "btn-success" : "btn-outline-success")">
         Todos
     </a>
-    <a asp-action="Index" asp-route-status="@MatchStatus.Scheduled"
+    <a asp-action="Index" asp-route-status="@MatchStatus.Scheduled" asp-route-search="@search"
        class="btn btn-sm @(current == MatchStatus.Scheduled ? "btn-success" : "btn-outline-success")">
         Programados
     </a>
-    <a asp-action="Index" asp-route-status="@MatchStatus.InProgress"
+    <a asp-action="Index" asp-route-status="@MatchStatus.InProgress" asp-route-search="@search"
        class="btn btn-sm @(current == MatchStatus.InProgress ? "btn-success" : "btn-outline-success")">
         En juego
     </a>
-    <a asp-action="Index" asp-route-status="@MatchStatus.Finished"
+    <a asp-action="Index" asp-route-status="@MatchStatus.Finished" asp-route-search="@search"
        class="btn btn-sm @(current == MatchStatus.Finished ? "btn-success" : "btn-outline-success")">
         Finalizados
     </a>
@@ -34,7 +48,19 @@
 
 @if (!Model.Any())
 {
-    <p class="text-muted">No hay partidos registrados todavía.</p>
+    if (!string.IsNullOrEmpty(search))
+    {
+        <div class="text-center py-5">
+            <h1 class="display-4">🔍</h1>
+            <h4>No hay partidos para “@search”</h4>
+            <p class="text-muted">Prueba con otro nombre de equipo.</p>
+            <a asp-action="Index" class="btn btn-success">Volver a la cartelera de partidos</a>
+        </div>
+    }
+    else
+    {
+        <p class="text-muted">No hay partidos registrados todavía.</p>
+    }
 }
 
 <div class="row g-3">
