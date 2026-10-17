@@ -5,7 +5,7 @@ namespace GolBet.Services.Interfaces;
 
 public interface IMatchService
 {
-    Task<IEnumerable<MatchDto>> GetAllAsync(MatchStatus? status = null);
+    Task<IEnumerable<MatchDto>> GetAllAsync(MatchStatus? status = null, string? search = null);
     Task<MatchDto?> GetByIdAsync(int id);
 
     // Module 5: full detail read model for one match (includes bet count).
