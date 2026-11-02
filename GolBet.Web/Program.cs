@@ -48,6 +48,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 // Specific repositories
 builder.Services.AddScoped<IMatchRepository, MatchRepository>();
+builder.Services.AddScoped<IBetRepository, BetRepository>();
 
 // AutoMapper: mapeo Entity -> DTO
 builder.Services.AddAutoMapper(typeof(MappingProfile));
@@ -55,6 +56,7 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 // Services (lógica de negocio)
 builder.Services.AddScoped<IMatchService, MatchService>();
 builder.Services.AddScoped<ITeamService, TeamService>();
+builder.Services.AddScoped<IBetService, BetService>();
 
 var app = builder.Build();
 
